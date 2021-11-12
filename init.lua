@@ -6,7 +6,7 @@ moretools = {
 local modname = minetest.get_current_modname()
 local modpath = minetest.get_modpath(modname)
 
-if minetest.get_modpath("vines") then
+if minetest.get_modpath("screwdriver") then
   dofile(modpath.."/screwdrivers.lua")
 end
 

@@ -77,8 +77,6 @@ for material, data in pairs(shears) do
       stack_max = 1,
       max_drop_level = 3,
       tool_capabilities = data.tool_capabilities,
-      
-      on_use = trowel_on_use,
     })
   minetest.register_craft({
       output = "moretools:shears_"..material,
