@@ -19,33 +19,33 @@ local screwdrivers = {
   bronze = {
     desc = "Bronze",
     handle_mat = "group:stick",
-    body_mat = "default:bronze_ingot",
+    body_mat = "hades_core:bronze_ingot",
     _screwdriver_uses = 150,
   },
   --[[
   steel = {
     desc = "Iron",
     handle_mat = "group:stick",
-    body_mat = "default:steel_ingot",
+    body_mat = "hades_core:steel_rod",
     _screwdriver_uses = 200,
   },
   --]]
   mese = {
     desc = "Mese",
-    handle_mat = "default:steel_ingot",
-    body_mat = "default:mese_crystal",
+    handle_mat = "hades_core:steel_rod",
+    body_mat = "hades_core:mese_crystal",
     _screwdriver_uses = 500,
   },
-  diamond = {
-    desc = "Diamond",
-    handle_mat = "default:steel_ingot",
-    body_mat = "default:diamond",
+  prism = {
+    desc = "Prism",
+    handle_mat = "hades_core:steel_rod",
+    body_mat = "hades_core:prismatic_gem",
     _screwdriver_uses = 1000,
   },
 }
 
 for material, data in pairs(screwdrivers) do
-  minetest.register_tool("moretools:screwdriver_"..material, {
+  minetest.register_tool("hades_moretools:screwdriver_"..material, {
       description = S(data.desc.." Screwdriver"),
       inventory_image = "moretools_screwdriver_"..material..".png",
       wield_image = "moretools_screwdriver_"..material..".png",
@@ -61,7 +61,7 @@ for material, data in pairs(screwdrivers) do
       end,
     })
   minetest.register_craft({
-      output = "moretools:screwdriver_"..material,
+      output = "hades_moretools:screwdriver_"..material,
       recipe = {
         {data.body_mat},
         {data.handle_mat}

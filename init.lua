@@ -10,7 +10,7 @@ if minetest.get_modpath("vines") then
   dofile(modpath.."/screwdrivers.lua")
 end
 
-if minetest.get_modpath("vines") then
+if minetest.get_modpath("hades_vines") then
   dofile(modpath.."/shears.lua")
 end
 

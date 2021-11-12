@@ -18,7 +18,7 @@ local shears = {
   bronze = {
     desc = "Bronze",
     handle_mat = "group:stick",
-    body_mat = "default:bronze_ingot",
+    body_mat = "hades_core:bronze_ingot",
     tool_capabilities = {
       full_punch_interval = 1.0,
       max_drop_level = 1,
@@ -31,7 +31,7 @@ local shears = {
   steel = {
     desc = "Iron",
     handle_mat = "group:stick",
-    body_mat = "default:steel_ingot",
+    body_mat = "hades_core:steel_rod",
     tool_capabilities = {
       full_punch_interval = 1.0,
       max_drop_level = 1,
@@ -43,8 +43,8 @@ local shears = {
   --]]
   mese = {
     desc = "Mese",
-    handle_mat = "default:steel_ingot",
-    body_mat = "default:mese_crystal",
+    handle_mat = "hades_core:steel_rod",
+    body_mat = "hades_core:mese_crystal",
     tool_capabilities = {
       full_punch_interval = 1.0,
       max_drop_level = 1,
@@ -53,10 +53,10 @@ local shears = {
       }
     },
   },
-  diamond = {
-    desc = "Diamond",
-    handle_mat = "default:steel_ingot",
-    body_mat = "default:diamond",
+  prism = {
+    desc = "Prism",
+    handle_mat = "hades_core:steel_rod",
+    body_mat = "hades_core:prismatic_gem",
     tool_capabilities = {
       full_punch_interval = 1.0,
       max_drop_level = 1,
@@ -68,7 +68,7 @@ local shears = {
 }
 
 for material, data in pairs(shears) do
-  minetest.register_tool("moretools:shears_"..material, {
+  minetest.register_tool("hades_moretools:shears_"..material, {
       description = S(data.desc.." Shears"),
       inventory_image = "moretools_shears_"..material..".png",
       wield_image = "moretools_shears_"..material..".png",
@@ -81,7 +81,7 @@ for material, data in pairs(shears) do
       on_use = trowel_on_use,
     })
   minetest.register_craft({
-      output = "moretools:shears_"..material,
+      output = "hades_moretools:shears_"..material,
       recipe = {
         {"", data.body_mat, ""},
         {data.handle_mat, "group:wood", data.body_mat},
