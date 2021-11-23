@@ -1,9 +1,11 @@
-Minetest Game mod: moretools
+Minetest Game mod: hades_moretools
 ============================
 
 This mod add more tools variant for screwdriver and shears.
 It provides new tool garden trowel (used with composting mode).
-This mod provide new grass spreading method to Minetest subgame Hades Revisited.
+Garden trowel can be used to add clod into garden soil or to change farming soil into garden soil.
+Grass divot cen by get by garden trowel from dirt with grass and placed to wet garden soil.
+
 
 See LICENSE for license information.
 
