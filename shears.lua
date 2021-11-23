@@ -83,7 +83,7 @@ for material, data in pairs(shears) do
       recipe = {
         {"", data.body_mat, ""},
         {data.handle_mat, "group:wood", data.body_mat},
-        {"", "", data.handle_mat}
+        {"", data.handle_mat, ""}
       },
     })
 end
