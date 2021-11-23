@@ -1,14 +1,16 @@
 
 local S = moretools.translator
 
+local inv_next_line_offset = 8
+
 local function action_add_clod(action, user, pos, node)
   local inv = user:get_inventory()
   local index = user:get_wield_index()
-  local use_item = inv:get_stack("main", index+8)
+  local use_item = inv:get_stack("main", index+inv_next_line_offset)
   local fertilizer = composting.fertilize_items[use_item:get_name()]
   if fertilizer and (node.param2<255) then
     use_item:take_item(1)
-    inv:set_stack("main", index+8, use_item)
+    inv:set_stack("main", index+inv_next_line_offset, use_item)
     node.param2 = node.param2 + fertilizer
     if node.param2 > 255 then
       node.param2 = 255
@@ -22,10 +24,10 @@ end
 local function action_create_garden_soil(action, user, pos, node)
   local inv = user:get_inventory()
   local index = user:get_wield_index()
-  local use_item = inv:get_stack("main", index+8)
+  local use_item = inv:get_stack("main", index+inv_next_line_offset)
   if use_item:get_name()=="composting:compost_clod" then
     use_item:take_item(1)
-    inv:set_stack("main", index+8, use_item)
+    inv:set_stack("main", index+inv_next_line_offset, use_item)
     minetest.set_node(pos, action.new_node)
     minetest.swap_node(pos, action.new_node)
     return true
@@ -51,6 +53,9 @@ moretools.trowel_actions = {
 }
 
 local function trowel_on_use(itemstack, user, pointed_thing)
+  if pointed_thing.type~="node" then
+    return itemstack
+  end
   local pos = pointed_thing.under;
   local node = minetest.get_node(pos);
   local def = minetest.registered_nodes[node.name]
