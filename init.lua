@@ -1,20 +1,24 @@
 
 moretools = {
-  translator = minetest.get_translator("moretools")
+	translator = core.get_translator("moretools")
 }
 
-local modname = minetest.get_current_modname()
-local modpath = minetest.get_modpath(modname)
+local modname = core.get_current_modname()
+local modpath = core.get_modpath(modname)
+	
+dofile(modpath.."/adaptation.lua")
 
-if minetest.get_modpath("screwdriver") then
-  dofile(modpath.."/screwdrivers.lua")
+local adaptation = moretools.adaptation
+
+if adaptation.screwdriver_mod then
+	dofile(modpath.."/screwdrivers.lua")
 end
 
-if minetest.get_modpath("vines") then
-  dofile(modpath.."/shears.lua")
+if adaptation.shears_steel then
+	dofile(modpath.."/shears.lua")
 end
 
-if minetest.get_modpath("composting") then
-  dofile(modpath.."/garden_trowels.lua")
+if core.get_modpath("composting") then
+	dofile(modpath.."/garden_trowels.lua")
 end
 

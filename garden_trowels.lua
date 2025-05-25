@@ -1,7 +1,11 @@
 
 local S = moretools.translator
 
-local inv_next_line_offset = 8
+local adaptation = moretools.adaptation
+
+local N = adaptation_lib.get_item_name
+
+local inv_next_line_offset = adaptation.player_mod.next_line_offset_inv
 
 local function action_add_clod(action, user, pos, node)
   local inv = user:get_inventory()
@@ -15,7 +19,7 @@ local function action_add_clod(action, user, pos, node)
     if node.param2 > 255 then
       node.param2 = 255
     end
-    minetest.swap_node(pos, node)
+    core.swap_node(pos, node)
     return true
   end
   return false
@@ -28,8 +32,8 @@ local function action_create_garden_soil(action, user, pos, node)
   if use_item:get_name()=="composting:compost_clod" then
     use_item:take_item(1)
     inv:set_stack("main", index+inv_next_line_offset, use_item)
-    minetest.set_node(pos, action.new_node)
-    minetest.swap_node(pos, action.new_node)
+    core.set_node(pos, action.new_node)
+    core.swap_node(pos, action.new_node)
     return true
   end
   return false
@@ -42,11 +46,11 @@ moretools.trowel_actions = {
   ["composting:garden_soil_wet"] = {
       action_on_use = action_add_clod,
     },
-  ["farming:soil"] = {
+  [N(adaptation.soil)] = {
       action_on_use = action_create_garden_soil,
       new_node = {name = "composting:garden_soil", param2 = 127},
     },
-  ["farming:soil_wet"] = {
+  [N(adaptation.soil_wet)] = {
       action_on_use = action_create_garden_soil,
       new_node = {name = "composting:garden_soil_wet", param1 = 2, param2 = 127},
     },
@@ -57,13 +61,14 @@ local function trowel_on_use(itemstack, user, pointed_thing)
     return itemstack
   end
   local pos = pointed_thing.under;
-  local node = minetest.get_node(pos);
-  local def = minetest.registered_nodes[node.name]
+  local node = core.get_node(pos);
+  local def = core.registered_nodes[node.name]
   if def and def.buildable_to then
     pos.y = pos.y - 1;
-    node = minetest.get_node(pos);
+    node = core.get_node(pos);
   end
   local action = moretools.trowel_actions[node.name];
+	print(node.name.." : "..dump(action))
   if action then
     local wear = action.action_on_use(action, user, pos, node)
     if wear then
@@ -74,57 +79,79 @@ local function trowel_on_use(itemstack, user, pointed_thing)
   return itemstack;
 end
 
-local trowels = {
-  wood = {
+local trowels = {}
+
+if adaptation.stick and adaptation.wood then
+  trowels["wood"] = {
     desc = "Wooden",
-    handle_mat = "group:stick",
-    body_mat = "group:wood",
+    handle_mat = adaptation.stick,
+    body_mat = adaptation.wood,
     _trowel_wear = 6000,
-  },
-  stone = {
+  }
+end
+if adaptation.stick and adaptation.stone then
+  trowels["stone"] = {
     desc = "Stone",
-    handle_mat = "group:stick",
-    body_mat = "group:stone",
+    handle_mat = adaptation.stick,
+    body_mat = adaptation.stone,
     _trowel_wear = 3000,
-  },
-  bronze = {
+  }
+end
+if adaptation.stick and adaptation.bronze_ingot then
+  trowels["bronze"] = {
     desc = "Bronze",
-    handle_mat = "group:stick",
-    body_mat = "default:bronze_ingot",
+		tex_suffix = adaptation.is_hades and "_hades" or "",
+    handle_mat = adaptation.stick,
+    body_mat = N(adaptation.bronze_ingot),
     _trowel_wear = 1500,
-  },
-  steel = {
+  }
+end
+if adaptation.stick and adaptation.steel_ingot then
+  trowels["steel"] = {
     desc = "Iron",
-    handle_mat = "group:stick",
-    body_mat = "default:steel_ingot",
+    handle_mat = adaptation.stick,
+    body_mat = N(adaptation.steel_ingot),
     _trowel_wear = 2000,
-  },
-  mese = {
+  }
+end
+if adaptation.steel_rod and adaptation.mese_crystal then
+  trowels["mese"] = {
     desc = "Mese",
-    handle_mat = "default:steel_ingot",
-    body_mat = "default:mese_crystal",
+		tex_suffix = adaptation.is_hades and "_hades" or "",
+    handle_mat = N(adaptation.steel_rod),
+    body_mat = N(adaptation.mese_crystal),
     _trowel_wear = 600,
-  },
-  diamond = {
-    desc = "Diamond",
-    handle_mat = "default:steel_ingot",
-    body_mat = "default:diamond",
+  }
+end
+if adaptation.steel_rod and adaptation.prism then
+  trowels["prism"] = {
+    desc = "Prism",
+    handle_mat = N(adaptation.steel_rod),
+    body_mat = N(adaptation.prism),
     _trowel_wear = 200,
-  },
-}
+  }
+elseif adaptation.steel_rod and adaptation.diamond then
+  trowels["diamond"] = {
+    desc = "Diamond",
+    handle_mat = N(adaptation.steel_rod),
+    body_mat = N(adaptation.diamond),
+    _trowel_wear = 200,
+  }
+end
 
 for material, data in pairs(trowels) do
-  minetest.register_tool("moretools:garden_trowel_"..material, {
+	tex_suffix = data.tex_suffix or ""
+  core.register_tool("moretools:garden_trowel_"..material, {
       description = S(data.desc.." Garden Trowel"),
-      inventory_image = "moretools_garden_trowel_"..material..".png",
-      wield_image = "moretools_garden_trowel_"..material..".png^[transformR270",
+      inventory_image = "moretools_garden_trowel_"..material..tex_suffix..".png",
+      wield_image = "moretools_garden_trowel_"..material..tex_suffix..".png^[transformR270",
       sound = {breaks = "default_tool_breaks"},
       groups = {trowel = 1},
       _trowel_wear = data._trowel_wear,
       
       on_use = trowel_on_use,
     })
-  minetest.register_craft({
+  core.register_craft({
       output = "moretools:garden_trowel_"..material,
       recipe = {
         {data.handle_mat},
