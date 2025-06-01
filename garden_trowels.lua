@@ -20,7 +20,7 @@ local function action_add_clod(action, user, pos, node)
       node.param2 = 255
     end
     core.swap_node(pos, node)
-    return true
+    return 1.0
   end
   return false
 end
@@ -34,7 +34,7 @@ local function action_create_garden_soil(action, user, pos, node)
     inv:set_stack("main", index+inv_next_line_offset, use_item)
     core.set_node(pos, action.new_node)
     core.swap_node(pos, action.new_node)
-    return true
+    return 1.0
   end
   return false
 end
@@ -68,12 +68,12 @@ local function trowel_on_use(itemstack, user, pointed_thing)
     node = core.get_node(pos);
   end
   local action = moretools.trowel_actions[node.name];
-	print(node.name.." : "..dump(action))
+  --print("node: "..node.name.." action: "..dump(action))
   if action then
     local wear = action.action_on_use(action, user, pos, node)
-    if wear then
+    if wear and wear > 0 then
       local def = itemstack:get_definition();
-      itemstack:add_wear(def._trowel_wear);
+      itemstack:add_wear(math.ceil(def._trowel_wear*wear));
     end
   end
   return itemstack;
@@ -100,7 +100,7 @@ end
 if adaptation.stick and adaptation.bronze_ingot then
   trowels["bronze"] = {
     desc = "Bronze",
-		tex_suffix = adaptation.is_hades and "_hades" or "",
+    tex_suffix = adaptation.is_hades and "_hades" or "",
     handle_mat = adaptation.stick,
     body_mat = N(adaptation.bronze_ingot),
     _trowel_wear = 1500,
@@ -117,7 +117,7 @@ end
 if adaptation.steel_rod and adaptation.mese_crystal then
   trowels["mese"] = {
     desc = "Mese",
-		tex_suffix = adaptation.is_hades and "_hades" or "",
+    tex_suffix = adaptation.is_hades and "_hades" or "",
     handle_mat = N(adaptation.steel_rod),
     body_mat = N(adaptation.mese_crystal),
     _trowel_wear = 600,
@@ -140,7 +140,7 @@ elseif adaptation.steel_rod and adaptation.diamond then
 end
 
 for material, data in pairs(trowels) do
-	tex_suffix = data.tex_suffix or ""
+  tex_suffix = data.tex_suffix or ""
   core.register_tool("moretools:garden_trowel_"..material, {
       description = S(data.desc.." Garden Trowel"),
       inventory_image = "moretools_garden_trowel_"..material..tex_suffix..".png",
